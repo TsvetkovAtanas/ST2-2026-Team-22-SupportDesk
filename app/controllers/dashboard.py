@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
 
-router = APIRouter()
+from app.templates import templates
 
-views = Jinja2Templates(directory='app/views')
+router = APIRouter()
 
 
 @router.get('/')
 async def dashboard(request: Request):
-    return views.TemplateResponse(
+    return templates.TemplateResponse(
         request=request,
         name='dashboard.html',
         context={},
