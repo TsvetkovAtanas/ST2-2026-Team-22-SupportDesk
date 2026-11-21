@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{# "customer" is None when creating, and the Customer object when editing #}
+{% block title %}{% if customer %}Edit customer{% else %}New customer{% endif %}{% endblock %}
+
+{% block content %}
+<h1>{% if customer %}Edit customer{% else %}New customer{% endif %}</h1>
+
+{# The action decides which route receives the form: create or update #}
+<form method="post" action="{% if customer %}/customers/{{ customer.id }}{% else %}/customers{% endif %}">
+
+    {# Each name="..." must match the parameter name in the route exactly #}
+    <p>
+        <label for="name">Name</label><br>
+        <input id="name" name="name" value="{{ form.name or '' }}">
+        {% if errors.name %}<span class="error">{{ errors.name }}</span>{% endif %}
+    </p>
+
+    <p>
+        <label for="email">Email</label><br>
+        <input id="email" name="email" value="{{ form.email or '' }}">
+        {% if errors.email %}<span class="error">{{ errors.email }}</span>{% endif %}
+    </p>
+
+    <p>
+        <label for="phone_number">Phone (optional)</label><br>
+        <input id="phone_number" name="phone_number" value="{{ form.phone_number or '' }}">
+        {% if errors.phone_number %}<span class="error">{{ errors.phone_number }}</span>{% endif %}
+    </p>
+
+    <p>
+        <label for="company">Company</label><br>
+        <input id="company" name="company" value="{{ form.company or '' }}">
+        {% if errors.company %}<span class="error">{{ errors.company }}</span>{% endif %}
+    </p>
+
+    <button type="submit">Save</button>
+    <a href="/customers">Cancel</a>
+</form>
+{% endblock %}

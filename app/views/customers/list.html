@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Customers{% endblock %}
+
+{% block content %}
+<h1>Customers</h1>
+
+{# Shown after a failed delete: the controller redirects to /customers?error=has_tickets #}
+{% if request.query_params.get("error") == "has_tickets" %}
+    <p class="error">This customer has tickets and cannot be deleted.</p>
+{% endif %}
+
+<p><a href="/customers/new">+ New customer</a></p>
+
+{% if customers %}
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Company</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {# "customers" is the list passed in context by list_customers() #}
+        {% for c in customers %}
+        <tr>
+            <td>{{ c.name }}</td>
+            <td>{{ c.email }}</td>
+            <td>{{ c.phone_number or "—" }}</td>
+            <td>{{ c.company }}</td>
+            <td>
+                <a href="/customers/{{ c.id }}/edit">Edit</a>
+                {# Delete changes data, so it must be a POST form, never a link #}
+                <form method="post" action="/customers/{{ c.id }}/delete" style="display:inline">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p>No customers yet.</p>
+{% endif %}
+{% endblock %}

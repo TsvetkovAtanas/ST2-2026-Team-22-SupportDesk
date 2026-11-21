@@ -1,3 +1,19 @@
 .subtitle{
     size: 20px;
 }
+
+.error { 
+    color: #c0392b; 
+    margin-left: 0.5rem; 
+}
+
+table { 
+    border-collapse: collapse; 
+    width: 100%; 
+}
+
+th, td { 
+    border-bottom: 1px solid #ddd; 
+    padding: 0.5rem; 
+    text-align: left; 
+}
