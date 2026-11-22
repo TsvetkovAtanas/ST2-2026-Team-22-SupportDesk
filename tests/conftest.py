@@ -2,8 +2,8 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from app.models import Agent, Customer
 
-from app import models
 from app.config import setting
 from app.db import Base, get_db
 from app.main import app
@@ -28,3 +28,23 @@ def client(db):
     app.dependency_overrides[get_db] = lambda: db
     yield TestClient(app)
     app.dependency_overrides.clear()
+
+@pytest.fixture
+def agent(db):
+    """One agent savd in the test database."""
+    a = Agent(name="Test Agent", email="agent@test.com",
+              phone_number="+359880000000", password_hash="TEMP")
+    db.add(a)
+    db.commit()
+    db.refresh(a)
+    return a
+
+@pytest.fixture
+def customer(db):
+    """One customer saved in the test database."""
+    c = Customer(name="Test Customer", email="customer@test.com",
+              company="Lai corp.", password_hash="TEMP")
+    db.add(c)
+    db.commit()
+    db.refresh(c)
+    return c
