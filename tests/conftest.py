@@ -43,7 +43,7 @@ def agent(db):
 def customer(db):
     """One customer saved in the test database."""
     c = Customer(name="Test Customer", email="customer@test.com",
-              company="Lai corp.", password_hash="TEMP")
+              company="Lai corp.")
     db.add(c)
     db.commit()
     db.refresh(c)

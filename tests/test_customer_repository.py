@@ -1,12 +1,24 @@
 import pytest
-from app.repositories.customer_repository import CustomerRepository, DuplicateEmailError
+from app.repositories.customer_repository import CustomerRepository, DuplicateEmailError, CustomerHasTicketsError
 from app.schemas.customer import CustomerIn
+from app.schemas.ticket import TicketIn
+from app.repositories.ticket_repository import TicketRepository
 
 def make_data(**overrides):
     """Valid customer data; pass keyword arguments to change any field."""
     fields = {"name": "Ivan", "email": "ivan@test.com", "phone_number": None, "company": "ACME"}
     fields.update(overrides)
     return CustomerIn(**fields)
+
+def make_ticket(customer, agent, **overrides):
+    fields = {
+        "title": "Cannot log in",
+        "description": "Password reset email never arrives.",
+        "customer_id": customer.id,
+        "assigned_agent_id": agent.id,
+    }
+    fields.update(overrides)
+    return TicketIn(**fields)
 
 
 def test_create_returns_customer_with_id(db):
@@ -53,5 +65,12 @@ def test_creating_customers_with_same_emails_raises_exception(db):
     repo.create(make_data())
     with pytest.raises(DuplicateEmailError):
         repo.create(make_data(name="Zoro"))
+
+def test_deleting_customer_with_ticket(db, customer, agent):
+    repo = TicketRepository(db)
+    repo_customer = CustomerRepository(db)
+    repo.create(make_ticket(customer, agent))
+    with pytest.raises(CustomerHasTicketsError):
+        repo_customer.delete(customer)   
 
         
