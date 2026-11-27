@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.models import Agent, Customer
+from app.models import Agent, Customer, Ticket
 
 from app.config import setting
 from app.db import Base, get_db
@@ -48,3 +48,12 @@ def customer(db):
     db.commit()
     db.refresh(c)
     return c
+
+@pytest.fixture
+def ticket(db, customer, agent):
+    """One ticket saved in the test database"""
+    t = Ticket(title="Test Ticket", description="Test description", customer_id=customer.id, assigned_agent_id=agent.id)
+    db.add(t)
+    db.commit()
+    db.refresh(t)
+    return t
